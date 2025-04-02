@@ -76,6 +76,9 @@
         .register-box p a:hover {
             text-decoration: underline;
         }
+        h4{
+            color:red;
+        }
     </style>
 </head>
 <body>
@@ -94,6 +97,10 @@
                 <input type="password" name="password_confirmation" placeholder="Confirmar Contraseña" required>
                 <button type="submit">Registrarse</button>
             </form>
+            @if($errors->any())<h4>
+                {{$errors->first()}}
+            </h4>
+            @endif
             <p>¿Ya tienes cuenta? <a href="{{ route('login') }}">Inicia sesión aquí</a></p>
         </div>
     </div>

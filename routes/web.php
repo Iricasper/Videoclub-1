@@ -33,7 +33,9 @@ Route::middleware('auth')->group(function () {
 
     // Rutas de Alquileres
     Route::get('/alquileres', [AlquilerController::class, 'index'])->name('alquileres.index');
-    Route::post('/alquileres', [AlquilerController::class, 'store'])->name('alquileres.store');
+    Route::post('/alquilar/{id}', [AlquilerController::class, 'store'])->name('alquileres.store');
+    Route::post('/devolver/{id}', [AlquilerController::class, 'devolver'])->name('devolver');
+    Route::post('/ampliar-plazo/{id}', [AlquilerController::class, 'ampliarPlazo'])->name('ampliar-plazo');
 
     // Rutas de Usuarios (solo admin, por ejemplo)
     Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');

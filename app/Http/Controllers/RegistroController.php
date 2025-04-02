@@ -15,18 +15,19 @@ class RegistroController extends Controller{
 
     public function registrar(Request $request){
         $datos = $request -> validate(
-            ['nombre => required|String|max:50',
-            'apellido1 => required|String|max:50',
-            'apellido2 => required|String|max:50',
-            'telefono => required|String|max:15',
-            'email => required|email|max:100',
-            'password => required|confirmed|min:8']);
+            ['nombre' => 'required|String|max:50',
+            'apellido1' => 'required|String|max:50',
+            'apellido2' => 'required|String|max:50',
+            'telefono' => 'required|String|max:15',
+            'email' => 'required|email|max:100',
+            'password' => 'required|confirmed|min:8']);
 
         if (Auth::attempt($datos)) {
             $request->session()->regenerate();
     
             return redirect()->intended('/login');
         }
+        if($request -> password == $request -> password_confirmation) {
 
         $user = User::create(
             [
@@ -42,7 +43,11 @@ class RegistroController extends Controller{
 
         
         return redirect()->intended('/login');
+        
+        }
+        return back()->withErrors('Las contraseñas no coinciden');
 
+        
         
     }
 
