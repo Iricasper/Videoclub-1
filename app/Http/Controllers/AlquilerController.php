@@ -10,7 +10,13 @@ use Auth;
 
 class AlquilerController extends Controller
 {
+    public function index()
+    {
+        // Obtener los alquileres del usuario autenticado con la relación 'pelicula' cargada
+        $alquileres = Alquiler::with('pelicula')->where('id_cliente', Auth::id())->get();
 
+        return view('alquileres', compact('alquileres'));  // 'alquileres' es el nombre de tu vista
+    }
 
     public function store(Request $request, $id)
     {
@@ -26,16 +32,10 @@ class AlquilerController extends Controller
             ->where('id_pelicula', $id)
             ->where('fecha_devolucion', '>', Carbon::now())
             ->first();
-        
 
         if ($alquilerExistente) {
             return back()->with('error', 'Ya tienes esta película alquilada.');
         }
-
-        // Verificar stock antes de alquilar
-        /*if ($pelicula->stock <= 0) {
-            return back()->with('error', 'No hay copias disponibles para alquilar.');
-        }*/
 
         // Crear el alquiler
         $alquiler = new Alquiler();
@@ -46,10 +46,20 @@ class AlquilerController extends Controller
         $alquiler->importe_alquiler = $pelicula->precio_alquiler;
         $alquiler->save();
 
-        // Reducir stock de la película
-        //$pelicula->stock -= 1;
-        //$pelicula->save();
-
         return back()->with('success', '¡Película alquilada con éxito!');
+    }
+
+    public function devolver($id)
+    {
+        $alquiler = Alquiler::findOrFail($id);
+
+        // Solo permitir la devolución si el alquiler pertenece al usuario autenticado
+        if ($alquiler->id_cliente == Auth::id()) {
+            $alquiler->fecha_devolucion = Carbon::now(); // Registrar la devolución con la fecha actual
+            $alquiler->save();
+            return back()->with('success', 'Película devuelta correctamente.');
+        } else {
+            return back()->with('error', 'No tienes permiso para devolver este alquiler.');
+        }
     }
 }

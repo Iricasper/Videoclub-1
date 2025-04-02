@@ -128,10 +128,18 @@
 
 <body>
 
-    <!-- Barra de Bienvenida -->
-    <div class="welcome-bar">
-        ¡Bienvenido, {{ session('nombre', 'Usuario Invitado') }}!
-    </div>
+    <!-- Contenedor del usuario -->
+    <div class="user-dropdown">
+            <div class="user-trigger" onclick="toggleDropdown()">
+                ▼ Bienvenido {{ Auth::user()->nombre }}
+            </div>
+            <div id="dropdown-menu" class="dropdown-menu">
+                <a href="{{ route('logout') }}"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    Cerrar sesión
+                </a>
+            </div>
+        </div>
 
     <div class="menu-container">
         <header class="menu-header">

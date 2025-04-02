@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\AlquilerController;
+use App\Http\Controllers\PeliculaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\PeliculaController;
-use App\Http\Controllers\AlquilerController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\MenuController;
 
@@ -32,10 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/peliculas/{id}', [PeliculaController::class, 'show'])->name('peliculas.show');
 
     // Rutas de Alquileres
-    Route::get('/alquileres', [AlquilerController::class, 'index'])->name('alquileres.index');
-    Route::post('/alquilar/{id}', [AlquilerController::class, 'store'])->name('alquileres.store');
-    Route::post('/devolver/{id}', [AlquilerController::class, 'devolver'])->name('devolver');
-    Route::post('/ampliar-plazo/{id}', [AlquilerController::class, 'ampliarPlazo'])->name('ampliar-plazo');
+    Route::get('/alquileres', [AlquilerController::class, 'index'])->name('alquileres.index');  // Mostrar alquileres
+    Route::post('/alquilar/{id}', [AlquilerController::class, 'store'])->name('alquileres.store');  // Crear alquiler
+    Route::post('/devolver/{id}', [AlquilerController::class, 'devolver'])->name('devolver');  // Devolver alquiler
 
     // Rutas de Usuarios (solo admin, por ejemplo)
     Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
@@ -48,3 +47,4 @@ Route::middleware('auth')->group(function () {
 Route::fallback(function () {
     return redirect()->route('login');
 });
+

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,7 +34,8 @@
             margin-top: 20px;
         }
 
-        table th, table td {
+        table th,
+        table td {
             padding: 10px;
             text-align: left;
             border-bottom: 1px solid #ddd;
@@ -51,10 +53,13 @@
         .btn-devolver:hover {
             background-color: #e55b00;
         }
-
     </style>
 </head>
+
 <body>
+    <div class="botones-alquileres">
+        <a href="{{ route('menu') }}">Volver</a>
+    </div>
 
     <div class="container">
         <h1>Mis Alquileres</h1>
@@ -62,6 +67,7 @@
         @if($alquileres->isEmpty())
             <p>No tienes alquileres activos.</p>
         @else
+
             <table>
                 <thead>
                     <tr>
@@ -76,8 +82,8 @@
                     @foreach($alquileres as $alquiler)
                         <tr>
                             <td>{{ $alquiler->pelicula->titulo }}</td>
-                            <td>{{ $alquiler->fecha_alquiler->format('d-m-Y') }}</td>
-                            <td>{{ $alquiler->fecha_devolucion->format('d-m-Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($alquiler->fecha_alquiler)->format('d-m-Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($alquiler->fecha_devolucion)->format('d-m-Y') }}</td>
                             <td>${{ number_format($alquiler->importe_alquiler, 2) }}</td>
                             <td>
                                 @if($alquiler->fecha_devolucion > now())
@@ -98,4 +104,5 @@
     </div>
 
 </body>
+
 </html>
