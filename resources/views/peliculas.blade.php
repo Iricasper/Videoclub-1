@@ -101,6 +101,26 @@
             cursor: pointer;
             font-weight: bold;
         }
+
+        .botones-peliculas {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            /* Espacio entre botones */
+            margin-top: 20px;
+        }
+
+        .botones-peliculas a {
+            text-decoration: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: background 0.3s, transform 0.2s;
+            display: inline-block;
+            text-align: center;
+            min-width: 150px;
+        }
     </style>
 </head>
 
@@ -121,8 +141,8 @@
             </div>
         @endif
         <div class="botones-peliculas">
-            <a href="{{ route('alquileres.index') }}">Ver Alquileres</a>
-            <a href="{{ route('menu') }}">Volver</a>
+            <a href="{{ route('alquileres.index') }}" class="btn-alquiler">Ver Alquileres</a>
+            <a href="{{ route('menu') }}" class="btn-volver">Volver</a>
         </div>
 
         <!-- Mostrar las películas -->

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Alquiler;
 use App\Models\Pelicula;
+use App\Models\Opinion;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Auth;
@@ -14,8 +15,7 @@ class AlquilerController extends Controller
     {
         // Obtener los alquileres del usuario autenticado con la relación 'pelicula' cargada
         $alquileres = Alquiler::with('pelicula')->where('id_cliente', Auth::id())->get();
-
-        return view('alquileres', compact('alquileres'));  // 'alquileres' es el nombre de tu vista
+        return view('alquileres', compact('alquileres'));
     }
 
     public function store(Request $request, $id)
@@ -53,9 +53,8 @@ class AlquilerController extends Controller
     {
         $alquiler = Alquiler::findOrFail($id);
 
-        // Solo permitir la devolución si el alquiler pertenece al usuario autenticado
         if ($alquiler->id_cliente == Auth::id()) {
-            $alquiler->fecha_devolucion = Carbon::now(); // Registrar la devolución con la fecha actual
+            $alquiler->fecha_devolucion = Carbon::now();
             $alquiler->save();
             return back()->with('success', 'Película devuelta correctamente.');
         } else {

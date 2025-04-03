@@ -151,8 +151,8 @@
             <h2>Películas Destacadas</h2>
             <div class="movie-slider">
                 <div class="slider-item">
-                    <img src="https://via.placeholder.com/300x200" alt="Película 1">
-                    <p>Película 1</p>
+                    <img src="{{ asset('storage/coco.jpg') }}" alt="Coco" style="fill">
+                    <p>Coco</p>
                 </div>
                 <div class="slider-item">
                     <img src="https://via.placeholder.com/300x200" alt="Película 2">

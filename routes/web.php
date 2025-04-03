@@ -8,6 +8,8 @@ use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\OpinionController;
+
 
 // Ruta de la página de inicio
 Route::get('/', function () {
@@ -41,6 +43,13 @@ Route::middleware('auth')->group(function () {
 
     // Ruta para el menú principal
     Route::get('/menu', [MenuController::class, 'mostrarMenu'])->name('menu');
+
+    // Ruta para las opinionesç
+    Route::post('/opiniones', [OpinionController::class, 'store'])->name('opiniones.store');
+    // Ruta para obtener la opinión de un usuario para una película específica
+    Route::get('/opiniones/editar/{idPelicula}', [OpinionController::class, 'edit']);
+
+
 });
 
 // Si el usuario intenta acceder a una página sin permiso, redirigir al login
