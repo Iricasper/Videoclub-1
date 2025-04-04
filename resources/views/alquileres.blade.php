@@ -87,6 +87,18 @@
             margin: 10px 0;
             padding: 8px;
         }
+
+        /* Estilo para los botones de radio */
+        .radio-label {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .radio-button {
+            margin-right: 5px;
+        }
     </style>
 </head>
 
@@ -114,10 +126,10 @@
                 <tbody>
                     @foreach($alquileres as $alquiler)
                         <tr>
-                            <td>{{ $alquiler->pelicula->titulo }}</td>
+                            <td>{{ $alquiler->titulo }}</td>
                             <td>{{ \Carbon\Carbon::parse($alquiler->fecha_alquiler)->format('d-m-Y') }}</td>
                             <td>{{ \Carbon\Carbon::parse($alquiler->fecha_devolucion)->format('d-m-Y') }}</td>
-                            <td>${{ number_format($alquiler->importe_alquiler, 2) }}</td>
+                            <td>{{ number_format($alquiler->importe_alquiler, 2) }} €</td>
                             <td>
                                 @if($alquiler->fecha_devolucion > now())
                                     <form action="{{ route('devolver', $alquiler->id) }}" method="POST" style="display: inline;">
@@ -125,7 +137,7 @@
                                         <button type="submit" class="btn">Devolver</button>
                                     </form>
                                 @endif
-                                <button class="btn" onclick="openModal({{ $alquiler->pelicula->id }})">Dar Opinión</button>
+                                <button class="btn" onclick="openModal({{ $alquiler->id }})">Dar Opinión</button>
                             </td>
                         </tr>
                     @endforeach
@@ -155,19 +167,21 @@
                     ];
                 @endphp
 
-                <!-- Aquí ajustamos los nombres de los campos de comentarios -->
                 @foreach($preguntas as $key => $pregunta)
-                    <label>{{ $pregunta }}</label>
-                    <select name="{{ $key }}" required>
-                        <option value="" disabled selected>Selecciona una opción</option>
-                        <option value="1" {{ old($key) == '1' ? 'selected' : '' }}>Sí</option>
-                        <option value="0" {{ old($key) == '0' ? 'selected' : '' }}>No</option>
-                    </select>
-                    <!-- Asegúrate de que los nombres coincidan con el formato esperado en el controlador -->
-                    <textarea name="comentario_{{ $key }}"
-                        placeholder="Comentario adicional (opcional)">{{ old("comentario_{$key}") }}</textarea>
-                @endforeach
+                    <label>{{ $pregunta }}</label><br>
 
+                    <!-- Radio buttons con la estructura correcta -->
+                    <label class="radio-label">
+                        Sí
+                        <input type="radio" name="{{ $key }}" value="1" class="radio-button" {{ old($key) == '1' ? 'checked' : '' }} required>
+                    </label>
+                    <label class="radio-label">
+                        No
+                        <input type="radio" name="{{ $key }}" value="0" class="radio-button" {{ old($key) == '0' ? 'checked' : '' }} required>
+                    </label><br>
+
+                    <textarea name="comentario_{{ $key }}" placeholder="Comentario adicional (opcional)">{{ old("comentario_{$key}") }}</textarea><br><br>
+                @endforeach
 
                 <button type="submit" class="btn">Enviar</button>
                 <button type="button" class="btn" onclick="closeModal()">Cerrar</button>
@@ -189,7 +203,11 @@
                         for (let i = 1; i <= 7; i++) {
                             const preguntaField = document.querySelector(`[name="pregunta_${i}"]`);
                             const comentarioField = document.querySelector(`[name="comentario_${i}"]`);
-                            preguntaField.value = data.opinion[`pregunta_${i}`] || '';
+                            if (data.opinion[`pregunta_${i}`] === 1) {
+                                preguntaField[0].checked = true; // Seleccionar 'Sí'
+                            } else if (data.opinion[`pregunta_${i}`] === 0) {
+                                preguntaField[1].checked = true; // Seleccionar 'No'
+                            }
                             comentarioField.value = data.opinion[`comentario_${i}`] || '';
                         }
                     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Alquiler;
 use App\Models\Pelicula;
 use App\Models\Opinion;
+use DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Auth;
@@ -13,9 +14,13 @@ class AlquilerController extends Controller
 {
     public function index()
     {
-        // Obtener los alquileres del usuario autenticado con la relación 'pelicula' cargada
-        $alquileres = Alquiler::with('pelicula')->where('id_cliente', Auth::id())->get();
-        return view('alquileres', compact('alquileres'));
+        // Obtener los alquileres del usuario autenticado con la relación 'pelicula' y con los datos sobre las reseñas cargadas     
+    $alquileres = DB::table('alquileres')
+    ->join('peliculas', 'alquileres.id_pelicula', '=', 'peliculas.id')
+    ->leftJoin('opiniones', 'alquileres.id_pelicula', '=', 'opiniones.id_pelicula')
+    ->where('alquileres.id_cliente', Auth::id()) // Filtrar por el usuario autenticado
+    ->get();
+    return view('alquileres', compact('alquileres'));
     }
 
     public function store(Request $request, $id)
