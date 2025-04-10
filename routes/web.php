@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlquilerController;
+use App\Http\Controllers\OpinionVideoclubController;
 use App\Http\Controllers\PeliculaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
@@ -51,7 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/opiniones/editar/{idPelicula}', [OpinionController::class, 'edit']);
     Route::get('/opiniones/details/{id}', [OpinionController::class, 'details'])->name('opiniones.details');
     
-
+    Route::post('opiniones-videoclub.store', [OpinionVideoclubController::class, 'store'])->name('opiniones-videoclub.store');
 
 });
 
