@@ -23,6 +23,8 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/registro', [RegistroController::class, 'mostrarRegistro'])->name('registro');
 Route::post('/registro', [RegistroController::class, 'registrar']);
+Route::post('/devolver/{id}', [AlquilerController::class, 'devolver'])->name('devolver');  // Devolver alquiler
+
 
 // Rutas protegidas (requieren autenticación)
 Route::middleware('auth')->group(function () {
@@ -36,8 +38,7 @@ Route::middleware('auth')->group(function () {
     // Rutas de Alquileres
     Route::get('/alquileres', [AlquilerController::class, 'index'])->name('alquileres.index');  // Mostrar alquileres
     Route::post('/alquilar/{id}', [AlquilerController::class, 'store'])->name('alquileres.store');  // Crear alquiler
-    Route::post('/devolver/{id}', [AlquilerController::class, 'devolver'])->name('devolver');  // Devolver alquiler
-
+    
     // Rutas de Usuarios (solo admin, por ejemplo)
     Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
 

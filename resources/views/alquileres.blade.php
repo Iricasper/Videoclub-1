@@ -125,21 +125,31 @@
                 </thead>
                 <tbody>
                     @foreach($alquileres as $alquiler)
-                        <tr>
-                            <td>{{ $alquiler->titulo }}</td>
-                            <td>{{ \Carbon\Carbon::parse($alquiler->fecha_alquiler)->format('d-m-Y') }}</td>
-                            <td>{{ \Carbon\Carbon::parse($alquiler->fecha_devolucion)->format('d-m-Y') }}</td>
-                            <td>{{ number_format($alquiler->importe_alquiler, 2) }} €</td>
-                            <td>
-                                @if($alquiler->fecha_devolucion > now())
-                                    <form action="{{ route('devolver', $alquiler->id) }}" method="POST" style="display: inline;">
-                                        @csrf
-                                        <button type="submit" class="btn">Devolver</button>
-                                    </form>
-                                @endif
-                                <button class="btn" onclick="openModal({{ $alquiler->id }})">Dar Opinión</button>
-                            </td>
-                        </tr>
+                                <tr>
+                                    <td>{{ $alquiler->titulo }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($alquiler->fecha_alquiler)->format('d-m-Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($alquiler->fecha_devolucion)->format('d-m-Y') }}</td>
+                                    <td>{{ number_format($alquiler->importe_alquiler, 2) }} €</td>
+                                    <td>
+                                        @if($alquiler->fecha_devolucion > now())
+                                            <form action="{{ route('devolver', $alquiler->id_alquiler) }}" method="POST" style="display: inline;">
+                                                @csrf
+                                                <button type="submit" class="btn">Devolver</button>
+                                            </form>
+                                        @endif
+                                        @if(
+                                            DB::table('opiniones')
+                                                ->where('id_usuario', "=", $alquiler->id_cliente)
+                                                ->where('id_pelicula', "=", $alquiler->id)->where('id_opinion', "!=", null)
+                                                ->exists()
+                                        )
+                                                            <button class="btn" onclick="openModal({{ $alquiler->id }})">Editar Opinión</button>
+                                        @else()
+                                            <button class="btn" onclick="openModal({{ $alquiler->id }})">Dar Opinión</button>
+                                        @endif
+
+                                    </td>
+                                </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -180,7 +190,8 @@
                         <input type="radio" name="{{ $key }}" value="0" class="radio-button" {{ old($key) == '0' ? 'checked' : '' }} required>
                     </label><br>
 
-                    <textarea name="comentario_{{ $key }}" placeholder="Comentario adicional (opcional)">{{ old("comentario_{$key}") }}</textarea><br><br>
+                    <textarea name="comentario_{{ $key }}"
+                        placeholder="Comentario adicional (opcional)">{{ old("comentario_{$key}") }}</textarea><br><br>
                 @endforeach
 
                 <button type="submit" class="btn">Enviar</button>

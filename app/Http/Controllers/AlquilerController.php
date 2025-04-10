@@ -15,11 +15,12 @@ class AlquilerController extends Controller
     public function index()
     {
         // Obtener los alquileres del usuario autenticado con la relación 'pelicula' y con los datos sobre las reseñas cargadas     
-    $alquileres = DB::table('alquileres')
+    $alquileres = Alquiler::select('*', 'alquileres.id as id_alquiler')
     ->join('peliculas', 'alquileres.id_pelicula', '=', 'peliculas.id')
-    ->leftJoin('opiniones', 'alquileres.id_pelicula', '=', 'opiniones.id_pelicula')
+    ->leftJoin('opiniones', 'alquileres.id_cliente', '=', 'opiniones.id_usuario')
     ->where('alquileres.id_cliente', Auth::id()) // Filtrar por el usuario autenticado
     ->get();
+    
     return view('alquileres', compact('alquileres'));
     }
 
@@ -56,14 +57,11 @@ class AlquilerController extends Controller
 
     public function devolver($id)
     {
-        $alquiler = Alquiler::findOrFail($id);
-
-        if ($alquiler->id_cliente == Auth::id()) {
+        
+        $alquiler = Alquiler::where('id',$id)->first();
             $alquiler->fecha_devolucion = Carbon::now();
             $alquiler->save();
             return back()->with('success', 'Película devuelta correctamente.');
-        } else {
-            return back()->with('error', 'No tienes permiso para devolver este alquiler.');
-        }
+        
     }
 }
