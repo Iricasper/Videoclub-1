@@ -17,7 +17,9 @@ class AlquilerController extends Controller
         // Obtener los alquileres del usuario autenticado con la relación 'pelicula' y con los datos sobre las reseñas cargadas     
     $alquileres = Alquiler::select('*', 'alquileres.id as id_alquiler')
     ->join('peliculas', 'alquileres.id_pelicula', '=', 'peliculas.id')
-    ->leftJoin('opiniones', 'alquileres.id_cliente', '=', 'opiniones.id_cliente')
+    ->leftJoin('opiniones', function($join) {
+        $join->on('alquileres.id_cliente', '=', 'opiniones.id_cliente')->on('alquileres.id_pelicula', '=', 'opiniones.id_pelicula');
+    })
     ->where('alquileres.id_cliente', Auth::id()) // Filtrar por el usuario autenticado
     ->get();
     
