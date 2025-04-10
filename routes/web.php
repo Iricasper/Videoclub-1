@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function () {
     // Ruta para obtener la opinión de un usuario para una película específica
     Route::get('/opiniones/editar/{idPelicula}', [OpinionController::class, 'edit']);
     Route::get('/opiniones/details/{id}', [OpinionController::class, 'details'])->name('opiniones.details');
+    
 
 
 });

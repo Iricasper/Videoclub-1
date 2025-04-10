@@ -34,13 +34,13 @@ class OpinionController extends Controller
                 'pregunta_5' => $validated['pregunta_5'],
                 'pregunta_6' => $validated['pregunta_6'],
                 'pregunta_7' => $validated['pregunta_7'],
-                'comentario_1' => $request->comentario_pregunta_1 !== null ? $request->comentario_pregunta_1 : "",
-                'comentario_2' => $request->comentario_pregunta_2 !== null ? $request->comentario_pregunta_2 : "",
-                'comentario_3' => $request->comentario_pregunta_3 !== null ? $request->comentario_pregunta_3 : "",
-                'comentario_4' => $request->comentario_pregunta_4 !== null ? $request->comentario_pregunta_4 : "",
-                'comentario_5' => $request->comentario_pregunta_5 !== null ? $request->comentario_pregunta_5 : "",
-                'comentario_6' => $request->comentario_pregunta_6 !== null ? $request->comentario_pregunta_6 : "",
-                'comentario_7' => $request->comentario_pregunta_7 !== null ? $request->comentario_pregunta_7 : "",
+                'comentario_1' => $request->comentario_1_2 !== null ? $request->comentario_1_2 : "",
+                'comentario_2' => $request->comentario_2_2 !== null ? $request->comentario_2_2 : "",
+                'comentario_3' => $request->comentario_3_2 !== null ? $request->comentario_3_2 : "",
+                'comentario_4' => $request->comentario_4_2 !== null ? $request->comentario_4_2 : "",
+                'comentario_5' => $request->comentario_5_2 !== null ? $request->comentario_5_2 : "",
+                'comentario_6' => $request->comentario_6_2 !== null ? $request->comentario_6_2 : "",
+                'comentario_7' => $request->comentario_7_2 !== null ? $request->comentario_7_2 : "",
 
 
             ]
@@ -49,4 +49,21 @@ class OpinionController extends Controller
         return redirect()->back()->with('success', '¡Opinión enviada correctamente!');
     }
 
+    public function edit($idPelicula)
+    {
+        // Obtén la opinión del usuario para la película específica
+        $opinion = Opinion::where('id_pelicula', $idPelicula)
+            ->where('id_cliente', auth()->id())
+            ->first();
+
+        // Si no existe la opinión, puedes manejar el error o devolver algo vacío.
+        if (!$opinion) {
+            return response()->json(['error' => 'No se encontró opinión para esta película.'], 404);
+        }
+
+        return response()->json($opinion);
+    }
+
+
 }
+

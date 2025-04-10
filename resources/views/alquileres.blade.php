@@ -81,6 +81,11 @@
             overflow-y: auto;
         }
 
+        #modal-editor {
+            display: none;
+            position: fixed;
+        }
+
         textarea,
         select {
             width: 100%;
@@ -132,7 +137,8 @@
                                     <td>{{ number_format($alquiler->importe_alquiler, 2) }} €</td>
                                     <td>
                                         @if($alquiler->fecha_devolucion > now())
-                                            <form action="{{ route('devolver', $alquiler->id_alquiler) }}" method="POST" style="display: inline;">
+                                            <form action="{{ route('devolver', $alquiler->id_alquiler) }}" method="POST"
+                                                style="display: inline;">
                                                 @csrf
                                                 <button type="submit" class="btn">Devolver</button>
                                             </form>
@@ -201,45 +207,33 @@
     </div>
 
     <!-- Modal de Edición -->
-    <div id="modal-opinion" class="modal">
+    <div id="modal-editor" class="modal">
         <div class="modal-content">
-            <h2>Deja tu Opinión</h2>
-            <form id="form-opinion" method="POST" action="{{ route('opiniones.store') }}">
+            <h2>Editar tu Opinión</h2>
+            <form id="form-editor" method="POST" action="{{ route('opiniones.store') }}">
                 @csrf
-                <input type="hidden" name="id_pelicula" id="id_pelicula">
+                <input type="hidden" name="id_pelicula" id="id_pelicula_editor">
 
                 <!-- Preguntas de Opinión -->
-                @php
-                    $preguntas = [
-                        'pregunta_1' => '¿Cumple el plazo de pago?',
-                        'pregunta_2' => '¿Abona la factura en tiempo razonable?',
-                        'pregunta_3' => '¿Contesta incidencias en tiempo razonable?',
-                        'pregunta_4' => '¿Te sientes valorado?',
-                        'pregunta_5' => '¿Es intuitiva la plataforma?',
-                        'pregunta_6' => '¿Recibes los contratos firmados?',
-                        'pregunta_7' => '¿Te gustaría seguir trabajando con el cliente?'
-                    ];
-                @endphp
-
-                @foreach($preguntas as $key => $pregunta)
-                    <label>{{ $pregunta }}</label><br>
-
-                    <!-- Radio buttons con la estructura correcta -->
+                @foreach(range(1, 7) as $i)
+                    <label for="pregunta{{ $i }}">Pregunta {{ $i }}</label><br>
                     <label class="radio-label">
                         Sí
-                        <input type="radio" name="{{ $key }}" value="1" class="radio-button" {{ old($key) == '1' ? 'checked' : '' }} required>
+                        <input type="radio" name="pregunta_{{ $i }}" value="1" id="pregunta{{ $i }}_1" class="radio-button"
+                            required>2
                     </label>
                     <label class="radio-label">
                         No
-                        <input type="radio" name="{{ $key }}" value="0" class="radio-button" {{ old($key) == '0' ? 'checked' : '' }} required>
+                        <input type="radio" name="pregunta_{{ $i }}" value="0" id="pregunta{{ $i }}_2" class="radio-button"
+                            required>
                     </label><br>
 
-                    <textarea name="comentario_{{ $key }}"
-                        placeholder="Comentario adicional (opcional)">{{ old("comentario_{$key}") }}</textarea><br><br>
+                    <textarea name="comentario_{{ $i }}_2" id="comentario_{{ $i }}_2"
+                        placeholder="Comentario adicional (opcional)"></textarea><br><br>
                 @endforeach
 
-                <button type="submit" class="btn">Enviar</button>
-                <button type="button" class="btn" onclick="closeModalOpinion()">Cerrar</button>
+                <button type="submit" class="btn">Actualizar</button>
+                <button type="button" class="btn" onclick="closeModalEditor()">Cerrar</button>
             </form>
         </div>
     </div>
@@ -256,11 +250,12 @@
                     if (data.opinion) {
                         // Rellenar los campos con la opinión ya existente
                         for (let i = 1; i <= 7; i++) {
-                            const preguntaField = document.querySelector(`[name="pregunta_${i}"]`);
+                            const preguntaField = document.querySelectorAll(`[name="pregunta_${i}"]`);
+                            
                             const comentarioField = document.querySelector(`[name="comentario_${i}"]`);
-                            if (data.opinion[`pregunta_${i}`] === 1) {
+                            if (data.opinion[`pregunta_${i}`] == 1) {
                                 preguntaField[0].checked = true; // Seleccionar 'Sí'
-                            } else if (data.opinion[`pregunta_${i}`] === 0) {
+                            } else {
                                 preguntaField[1].checked = true; // Seleccionar 'No'
                             }
                             comentarioField.value = data.opinion[`comentario_${i}`] || '';
@@ -270,37 +265,43 @@
         }
 
         function closeModalOpinion() {
-            document.getcloseModalOpinionElementById('modal-opinion').style.display = 'none';
+            document.getElementById('modal-opinion').style.display = 'none';
         }
 
         function openModalEditor(idPelicula) {
-            document.getElementById('modal-opinion').style.display = 'flex';
-            document.getElementById('id_pelicula').value = idPelicula;
-
-            // Cargar los datos de la opinión si existen
             fetch(`/opiniones/editar/${idPelicula}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.opinion) {
-                        // Rellenar los campos con la opinión ya existente
-                        for (let i = 1; i <= 7; i++) {
-                            const preguntaField = document.querySelector(`[name="pregunta_${i}"]`);
-                            const comentarioField = document.querySelector(`[name="comentario_${i}"]`);
-                            if (data.opinion[`pregunta_${i}`] === 1) {
-                                preguntaField[0].checked = true; // Seleccionar 'Sí'
-                            } else if (data.opinion[`pregunta_${i}`] === 0) {
-                                preguntaField[1].checked = true; // Seleccionar 'No'
-                            }
-                            comentarioField.value = data.opinion[`comentario_${i}`] || '';
-                        }
+                    if (data.error) {
+                        alert('No se encontró ninguna opinión para editar.');
+                        return;
                     }
-                });
+
+                    // Cargar los datos en los campos
+                    document.getElementById('id_pelicula_editor').value = idPelicula;
+
+                    for (let i = 1; i <= 7; i++) {
+
+                        // Cargar las respuestas de las preguntas
+                        document.getElementById(`pregunta${i}_1`).checked = data[`pregunta_${i}`] == 1;
+                        document.getElementById(`pregunta${i}_2`).checked = data[`pregunta_${i}`] == 0;
+
+
+                        // Cargar los comentarios
+                        document.getElementById(`comentario_${i}_2`).value = data[`comentario_${i}`] || "";
+                    }
+
+                    // Mostrar el modal
+                    document.getElementById("modal-editor").style.display = 'flex';
+                })
+                .catch(error => console.error('Error al obtener los datos de la opinión:', error));
         }
 
+
         function closeModalEditor() {
-            document.getcloseModalOpinionElementById('modal-opinion').style.display = 'none';
+            document.getElementById("modal-editor").style.display = 'none';
         }
-        
+
     </script>
 </body>
 
