@@ -139,13 +139,13 @@
                                         @endif
                                         @if(
                                             DB::table('opiniones')
-                                                ->where('id_usuario', "=", $alquiler->id_cliente)
+                                                ->where('id_cliente', "=", $alquiler->id_cliente)
                                                 ->where('id_pelicula', "=", $alquiler->id)->where('id_opinion', "!=", null)
                                                 ->exists()
                                         )
-                                                            <button class="btn" onclick="openModal({{ $alquiler->id }})">Editar Opinión</button>
+                                                            <button class="btn" onclick="openModalEditor({{ $alquiler->id }})">Editar Opinión</button>
                                         @else()
-                                            <button class="btn" onclick="openModal({{ $alquiler->id }})">Dar Opinión</button>
+                                            <button class="btn" onclick="openModalOpinion({{ $alquiler->id }})">Dar Opinión</button>
                                         @endif
 
                                     </td>
@@ -195,13 +195,57 @@
                 @endforeach
 
                 <button type="submit" class="btn">Enviar</button>
-                <button type="button" class="btn" onclick="closeModal()">Cerrar</button>
+                <button type="button" class="btn" onclick="closeModalOpinion()">Cerrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Edición -->
+    <div id="modal-opinion" class="modal">
+        <div class="modal-content">
+            <h2>Deja tu Opinión</h2>
+            <form id="form-opinion" method="POST" action="{{ route('opiniones.store') }}">
+                @csrf
+                <input type="hidden" name="id_pelicula" id="id_pelicula">
+
+                <!-- Preguntas de Opinión -->
+                @php
+                    $preguntas = [
+                        'pregunta_1' => '¿Cumple el plazo de pago?',
+                        'pregunta_2' => '¿Abona la factura en tiempo razonable?',
+                        'pregunta_3' => '¿Contesta incidencias en tiempo razonable?',
+                        'pregunta_4' => '¿Te sientes valorado?',
+                        'pregunta_5' => '¿Es intuitiva la plataforma?',
+                        'pregunta_6' => '¿Recibes los contratos firmados?',
+                        'pregunta_7' => '¿Te gustaría seguir trabajando con el cliente?'
+                    ];
+                @endphp
+
+                @foreach($preguntas as $key => $pregunta)
+                    <label>{{ $pregunta }}</label><br>
+
+                    <!-- Radio buttons con la estructura correcta -->
+                    <label class="radio-label">
+                        Sí
+                        <input type="radio" name="{{ $key }}" value="1" class="radio-button" {{ old($key) == '1' ? 'checked' : '' }} required>
+                    </label>
+                    <label class="radio-label">
+                        No
+                        <input type="radio" name="{{ $key }}" value="0" class="radio-button" {{ old($key) == '0' ? 'checked' : '' }} required>
+                    </label><br>
+
+                    <textarea name="comentario_{{ $key }}"
+                        placeholder="Comentario adicional (opcional)">{{ old("comentario_{$key}") }}</textarea><br><br>
+                @endforeach
+
+                <button type="submit" class="btn">Enviar</button>
+                <button type="button" class="btn" onclick="closeModalOpinion()">Cerrar</button>
             </form>
         </div>
     </div>
 
     <script>
-        function openModal(idPelicula) {
+        function openModalOpinion(idPelicula) {
             document.getElementById('modal-opinion').style.display = 'flex';
             document.getElementById('id_pelicula').value = idPelicula;
 
@@ -225,9 +269,38 @@
                 });
         }
 
-        function closeModal() {
-            document.getElementById('modal-opinion').style.display = 'none';
+        function closeModalOpinion() {
+            document.getcloseModalOpinionElementById('modal-opinion').style.display = 'none';
         }
+
+        function openModalEditor(idPelicula) {
+            document.getElementById('modal-opinion').style.display = 'flex';
+            document.getElementById('id_pelicula').value = idPelicula;
+
+            // Cargar los datos de la opinión si existen
+            fetch(`/opiniones/editar/${idPelicula}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.opinion) {
+                        // Rellenar los campos con la opinión ya existente
+                        for (let i = 1; i <= 7; i++) {
+                            const preguntaField = document.querySelector(`[name="pregunta_${i}"]`);
+                            const comentarioField = document.querySelector(`[name="comentario_${i}"]`);
+                            if (data.opinion[`pregunta_${i}`] === 1) {
+                                preguntaField[0].checked = true; // Seleccionar 'Sí'
+                            } else if (data.opinion[`pregunta_${i}`] === 0) {
+                                preguntaField[1].checked = true; // Seleccionar 'No'
+                            }
+                            comentarioField.value = data.opinion[`comentario_${i}`] || '';
+                        }
+                    }
+                });
+        }
+
+        function closeModalEditor() {
+            document.getcloseModalOpinionElementById('modal-opinion').style.display = 'none';
+        }
+        
     </script>
 </body>
 

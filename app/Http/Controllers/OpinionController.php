@@ -25,7 +25,7 @@ class OpinionController extends Controller
 
         // Crear o actualizar la opinión
         $opinion = Opinion::updateOrCreate(
-            ['id_pelicula' => $validated['id_pelicula'], 'id_usuario' => auth()->id()],
+            ['id_pelicula' => $validated['id_pelicula'], 'id_cliente' => auth()->id()],
             [
                 'pregunta_1' => $validated['pregunta_1'],
                 'pregunta_2' => $validated['pregunta_2'],

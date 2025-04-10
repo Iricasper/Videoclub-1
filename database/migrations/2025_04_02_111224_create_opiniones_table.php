@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('opiniones', function (Blueprint $table) {
             $table->increments('id_opinion'); // PK autoincremental
-            $table->foreignId('id_usuario')->constrained('users'); // Relación con usuarios
+            $table->foreignId('id_cliente')->constrained('users'); // Relación con usuarios
             $table->foreignId('id_pelicula')->constrained('peliculas'); // Relación con películas
 
             // Preguntas tipo Sí/No (Requeridas)

@@ -14,7 +14,7 @@ class Opinion extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'id_usuario',
+        'id_cliente',
         'id_pelicula',
         'pregunta_1',
         'pregunta_2',
@@ -46,7 +46,7 @@ class Opinion extends Model
     // Relación con Usuario
     public function usuario()
     {
-        return $this->belongsTo(User::class, 'id_usuario');
+        return $this->belongsTo(User::class, 'id_cliente');
     }
 
     // Relación con Película
