@@ -7,6 +7,32 @@ use Illuminate\Http\Request;
 
 class OpinionController extends Controller
 {
+
+    // Registrar una opinión
+    public function create(Request $request) {
+        $opinion = Opinion::updateOrCreate(
+            ['id_pelicula' => $request['id_pelicula'], 'id_cliente' => auth()->id()],
+            [
+                'pregunta_1' => $request['pregunta_1'],
+                'pregunta_2' => $request['pregunta_2'],
+                'pregunta_3' => $request['pregunta_3'],
+                'pregunta_4' => $request['pregunta_4'],
+                'pregunta_5' => $request['pregunta_5'],
+                'pregunta_6' => $request['pregunta_6'],
+                'pregunta_7' => $request['pregunta_7'],
+                'comentario_1' => $request->comentario_pregunta_1 !== null ? $request->comentario_pregunta_1 : "",
+                'comentario_2' => $request->comentario_pregunta_2 !== null ? $request->comentario_pregunta_2 : "",
+                'comentario_3' => $request->comentario_pregunta_3 !== null ? $request->comentario_pregunta_3 : "",
+                'comentario_4' => $request->comentario_pregunta_4 !== null ? $request->comentario_pregunta_4 : "",
+                'comentario_5' => $request->comentario_pregunta_5 !== null ? $request->comentario_pregunta_5 : "",
+                'comentario_6' => $request->comentario_pregunta_6 !== null ? $request->comentario_pregunta_6 : "",
+                'comentario_7' => $request->comentario_pregunta_7 !== null ? $request->comentario_pregunta_7 : "",
+
+
+            ]
+        );
+        return redirect()->back()->with('success', '¡Opinión creada correctamente!');
+    }
     // Mostrar la opinión del usuario para la película, si ya existe
     public function store(Request $request)
     {
@@ -46,7 +72,7 @@ class OpinionController extends Controller
             ]
         );
 
-        return redirect()->back()->with('success', '¡Opinión enviada correctamente!');
+        return redirect()->back()->with('success', '¡Opinión modificada correctamente!');
     }
 
     public function edit($idPelicula)

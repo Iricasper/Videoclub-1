@@ -215,7 +215,7 @@
     <div id="modal-opinion-videoclub" class="modal">
         <div class="modal-content">
             <h2>Deja tu Opinión</h2>
-            <form id="form-opinion-videoclub" method="POST" action="{{ route('opiniones-videoclub.store') }}">
+            <form id="form-opinion-videoclub" method="POST" action="{{ route('opiniones-videoclub.create') }}">
                 @csrf
                 <input type="hidden" name="id_cliente" id="id_cliente">
 
@@ -248,7 +248,7 @@
                     </label><br>
 
                     <textarea name="comentario_{{ $key }}"
-                        placeholder="Comentario adicional (opcional)">{{ old("comentario_{$key}") }}</textarea><br><br>
+                        placeholder="Comentario adicional (opcional)">{{ old("comentario{$key}") }}</textarea><br><br>
                 @endforeach
 
                 <button type="submit" class="btn">Enviar</button>
@@ -263,7 +263,7 @@
             <h2>Editar tu Opinión</h2>
             <form id="form-editor" method="POST" action="{{ route('opiniones-videoclub.store') }}">
                 @csrf
-                <input type="hidden" name="id_cliente" id="id_cliente_editor">
+                <input type="hidden" name="id_opinion" id="id_opinion_editor">
 
                 <!-- Preguntas de Opinión -->
                 @foreach(range(1, 9) as $i)

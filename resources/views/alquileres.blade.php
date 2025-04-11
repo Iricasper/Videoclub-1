@@ -166,7 +166,7 @@
     <div id="modal-opinion" class="modal">
         <div class="modal-content">
             <h2>Deja tu Opinión</h2>
-            <form id="form-opinion" method="POST" action="{{ route('opiniones.store') }}">
+            <form id="form-opinion" method="POST" action="{{ route('opiniones.create') }}">
                 @csrf
                 <input type="hidden" name="id_pelicula" id="id_pelicula">
 

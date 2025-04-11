@@ -46,13 +46,15 @@ Route::middleware('auth')->group(function () {
     // Ruta para el menú principal
     Route::get('/menu', [MenuController::class, 'mostrarMenu'])->name('menu');
 
-    // Ruta para las opinionesç
-    Route::post('/opiniones', [OpinionController::class, 'store'])->name('opiniones.store');
+    // Ruta para las opiniones
+    Route::post('/opiniones/create', [OpinionController::class, 'create'])->name('opiniones.create');
+    Route::post('/opiniones/store', [OpinionController::class, 'store'])->name('opiniones.store');
     // Ruta para obtener la opinión de un usuario para una película específica
     Route::get('/opiniones/editar/{idPelicula}', [OpinionController::class, 'edit']);
     Route::get('/opiniones/details/{id}', [OpinionController::class, 'details'])->name('opiniones.details');
     
-    Route::post('opiniones-videoclub.store', [OpinionVideoclubController::class, 'store'])->name('opiniones-videoclub.store');
+    Route::post('/opiniones-videoclub/create', [OpinionVideoclubController::class, 'create'])->name('opiniones-videoclub.create');
+    Route::post('/opiniones-videoclub/store', [OpinionVideoclubController::class, 'store'])->name('opiniones-videoclub.store');
     Route::get('/opiniones-videoclub/editar/{idCliente}', [OpinionVideoclubController::class, 'edit']);
 
 
