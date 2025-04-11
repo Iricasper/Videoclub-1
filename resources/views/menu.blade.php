@@ -148,11 +148,6 @@
             overflow-y: auto;
         }
 
-        #modal-editor {
-            display: none;
-            position: fixed;
-        }
-
         textarea,
         select {
             width: 100%;
@@ -227,15 +222,15 @@
                 <!-- Preguntas de Opinión -->
                 @php
                     $preguntas = [
-                        'pregunta_1' => '¿Ayuda a resolver las incidencias planteadas a los clientes?',
-                        'pregunta_2' => '¿Te sientes valorado por Recursos Impulsa?',
-                        'pregunta_3' => '¿Te ha ayudado a mejorar el CRM tu trabajo con Recursos Impulsa?',
-                        'pregunta_4' => '¿Mejorarías las gestiones del CRM?',
-                        'pregunta_5' => '¿Es buena la relación con el departamento de RRHH de Recursos Impulsa?',
-                        'pregunta_6' => '¿Es buena la relación con el departamento técnico de Recursos Impulsa?',
-                        'pregunta_7' => '¿Es buena la relación con el departamento de dirección de Recursos Impulsa?',
-                        'pregunta_8' => '¿Es buena la relación con el departamento de Administración de Recursos Impulsa?',
-                        'pregunta_9' => '¿Te sientes apoyado ante dificultades o incidencias por Recursos Impulsa?'
+                        'pregunta1' => '¿Ayuda a resolver las incidencias planteadas a los clientes?',
+                        'pregunta2' => '¿Te sientes valorado por Recursos Impulsa?',
+                        'pregunta3' => '¿Te ha ayudado a mejorar el CRM tu trabajo con Recursos Impulsa?',
+                        'pregunta4' => '¿Mejorarías las gestiones del CRM?',
+                        'pregunta5' => '¿Es buena la relación con el departamento de RRHH de Recursos Impulsa?',
+                        'pregunta6' => '¿Es buena la relación con el departamento técnico de Recursos Impulsa?',
+                        'pregunta7' => '¿Es buena la relación con el departamento de dirección de Recursos Impulsa?',
+                        'pregunta8' => '¿Es buena la relación con el departamento de Administración de Recursos Impulsa?',
+                        'pregunta9' => '¿Te sientes apoyado ante dificultades o incidencias por Recursos Impulsa?'
                     ];
                 @endphp
 
@@ -263,7 +258,7 @@
     </div>
 
     <!-- Modal de Edición -->
-    <div id="modal-editor" class="modal">
+    <div id="modal-editor-videoclub" class="modal">
         <div class="modal-content">
             <h2>Editar tu Opinión</h2>
             <form id="form-editor" method="POST" action="{{ route('opiniones-videoclub.store') }}">
@@ -275,16 +270,16 @@
                     <label for="pregunta{{ $i }}">Pregunta {{ $i }}</label><br>
                     <label class="radio-label">
                         Sí
-                        <input type="radio" name="pregunta_{{ $i }}" value="1" id="pregunta{{ $i }}_1" class="radio-button"
-                            required>2
+                        <input type="radio" name="pregunta{{ $i }}" value="1" id="pregunta{{ $i }}_1" class="radio-button"
+                            required>
                     </label>
                     <label class="radio-label">
                         No
-                        <input type="radio" name="pregunta_{{ $i }}" value="0" id="pregunta{{ $i }}_2" class="radio-button"
+                        <input type="radio" name="pregunta{{ $i }}" value="0" id="pregunta{{ $i }}_2" class="radio-button"
                             required>
                     </label><br>
 
-                    <textarea name="comentario_{{ $i }}_2" id="comentario_{{ $i }}_2"
+                    <textarea name="comentario{{ $i }}_2" id="comentario{{ $i }}_2"
                         placeholder="Comentario adicional (opcional)"></textarea><br><br>
                 @endforeach
 
@@ -324,7 +319,7 @@
             document.getElementById('id_cliente').value = idCliente;
 
             // Cargar los datos de la opinión si existen
-            fetch(`/opiniones/editar/${idCliente}`)
+            fetch(`/opiniones-videoclub/editar/${idCliente}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.opinion_videoclub) {
@@ -349,26 +344,25 @@
         }
 
         function openModalEditorVideoclub(idCliente) {
-            fetch(`/opiniones/editar/${idCliente}`)
+            fetch(`/opiniones-videoclub/editar/${idCliente}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
                         alert('No se encontró ninguna opinión para editar.');
                         return;
                     }
-
                     // Cargar los datos en los campos
                     document.getElementById('id_cliente_editor').value = idCliente;
 
-                    for (let i = 1; i <= 7; i++) {
+                    for (let i = 1; i <= 9; i++) {
 
                         // Cargar las respuestas de las preguntas
-                        document.getElementById(`pregunta${i}_1`).checked = data[`pregunta_${i}`] == 1;
-                        document.getElementById(`pregunta${i}_2`).checked = data[`pregunta_${i}`] == 0;
+                        document.getElementById(`pregunta${i}_1`).checked = data[`pregunta${i}`] == 1;
+                        document.getElementById(`pregunta${i}_2`).checked = data[`pregunta${i}`] == 0;
 
-
+                        console.log(data);
                         // Cargar los comentarios
-                        document.getElementById(`comentario_${i}`).value = data[`comentario_${i}`] || "";
+                        document.getElementById(`comentario${i}_2`).value = data[`comentario${i}`] || "";
                     }
 
                     // Mostrar el modal

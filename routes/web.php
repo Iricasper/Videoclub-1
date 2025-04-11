@@ -53,6 +53,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/opiniones/details/{id}', [OpinionController::class, 'details'])->name('opiniones.details');
     
     Route::post('opiniones-videoclub.store', [OpinionVideoclubController::class, 'store'])->name('opiniones-videoclub.store');
+    Route::get('/opiniones-videoclub/editar/{idCliente}', [OpinionVideoclubController::class, 'edit']);
+
 
 });
 
