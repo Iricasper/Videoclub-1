@@ -57,6 +57,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/opiniones-videoclub/store', [OpinionVideoclubController::class, 'store'])->name('opiniones-videoclub.store');
     Route::get('/opiniones-videoclub/editar/{idCliente}', [OpinionVideoclubController::class, 'edit']);
 
+    //Rutas de clientes
+    Route::get('/clientes/exportar-pdf', [UsuarioController::class, 'exportarPDF'])->name('exportarPDF');
+
+
 
 });
 
