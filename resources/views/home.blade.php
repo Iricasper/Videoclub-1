@@ -155,12 +155,12 @@
                     <p>Coco</p>
                 </div>
                 <div class="slider-item">
-                    <img src="https://via.placeholder.com/300x200" alt="Película 2">
-                    <p>Película 2</p>
+                    <img src="{{ asset('storage/toy_story.jpg') }}" alt="Toy_story" style="fill">
+                    <p>Toy Story</p>
                 </div>
                 <div class="slider-item">
-                    <img src="https://via.placeholder.com/300x200" alt="Película 3">
-                    <p>Película 3</p>
+                    <img src="{{ asset('storage/nemo.jpg') }}" alt="Nemo" style="fill">
+                    <p>Nemo</p>
                 </div>
             </div>
         </section>

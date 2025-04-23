@@ -166,6 +166,30 @@
         .radio-button {
             margin-right: 5px;
         }
+
+        .btn-valorar {
+            display: inline-block;
+            padding: 15px 40px;
+            margin: 20px;
+            background-color: rgb(255, 94, 0);
+            color: white;
+            text-decoration: none;
+            font-size: 20px;
+            border-radius: 10px;
+            transition: 0.3s ease;
+            box-shadow: 0 4px 10px rgba(255, 94, 0, 0.7);
+            font-weight: bold;
+
+        }
+
+        .btn a:hover {
+            background-color: rgb(241, 165, 52);
+            transform: scale(1.1);
+        }
+
+        .btn a:active {
+            transform: translateY(2px);
+        }
     </style>
 </head>
 
@@ -201,13 +225,15 @@
             <p id="news-text"></p>
         </div>
 
-        <div class="btn-valorar">
+        <div class="menu-buttons">
             @if (DB::table('opiniones_videoclub')->where('id_cliente', '=', Auth::id())->exists())
-                <button class="btn" onclick="openModalEditorVideoclub({{ Auth::id() }})">Actualizar tu valoración</button>
-            @else()
-                <button class="btn" onclick="openModalOpinionVideoclub({{ Auth::id() }})">Valóranos</button>
+                <a href="javascript:void(0);" onclick="openModalEditorVideoclub({{ Auth::id() }})">Actualizar tu
+                    valoración</a>
+            @else
+                <a href="javascript:void(0);" onclick="openModalOpinionVideoclub({{ Auth::id() }})">Valóranos</a>
             @endif
         </div>
+
 
     </div>
 
@@ -313,7 +339,7 @@
         // Muestra la primera noticia al cargar
         cambiarNoticia();
 
-        
+
         function openModalOpinionVideoclub(idCliente) {
             document.getElementById('modal-opinion-videoclub').style.display = 'flex';
             document.getElementById('id_cliente').value = idCliente;
@@ -326,7 +352,7 @@
                         // Rellenar los campos con la opinión ya existente
                         for (let i = 1; i <= 9; i++) {
                             const preguntaField = document.querySelectorAll(`[name="pregunta_${i}"]`);
-                            
+
                             const comentarioField = document.querySelector(`[name="comentario_${i}"]`);
                             if (data.opinion_videoclub[`pregunta_${i}`] == 1) {
                                 preguntaField[0].checked = true; // Seleccionar 'Sí'
@@ -377,7 +403,7 @@
         }
 
     </script>
-    
+
 
     <!-- Pie de Página -->
     <div class="footer" style="display: none;">
