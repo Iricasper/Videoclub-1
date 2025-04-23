@@ -352,7 +352,7 @@
                         return;
                     }
                     // Cargar los datos en los campos
-                    document.getElementById('id_cliente_editor').value = idCliente;
+                    document.getElementById('id_opinion_editor').value = idCliente;
 
                     for (let i = 1; i <= 9; i++) {
 

@@ -43,7 +43,7 @@ class OpinionVideoclubController extends Controller
         public function store(Request $request)
         {
             
-            dd($request);
+            //dd($request);
             $validated = $request->validate([
                 'pregunta1' => 'required|boolean',
                 'pregunta2' => 'required|boolean',
@@ -55,11 +55,13 @@ class OpinionVideoclubController extends Controller
                 'pregunta8' => 'required|boolean',
                 'pregunta9' => 'required|boolean'
             ]);
+            //dd($request);
             
             // Crear o actualizar la opinión
             $opinion = OpinionVideoclub::updateOrCreate(
                 [
-                    'id_cliente' => $request['id_cliente']],
+                    'id_cliente' => auth()->id(),
+                    ],
                     ['pregunta1' => $request['pregunta1'],
                     'pregunta2' => $request['pregunta2'],
                     'pregunta3' => $request['pregunta3'],
