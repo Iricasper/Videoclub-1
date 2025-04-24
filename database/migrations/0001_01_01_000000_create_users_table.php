@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('apellido1');
             $table->string('apellido2');
             $table->integer('telefono');
+            $table->tinyInteger('isLogged')->default(0);
             $table->timestamps();
         });
 

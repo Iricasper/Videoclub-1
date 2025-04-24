@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; 
 use Illuminate\Support\Facades\Session;
@@ -32,6 +33,11 @@ class LoginController extends Controller
             // Guarda el ID del usuario en la sesión manualmente
             session(['user_id' => Auth::user()->id]);
 
+            //Actualizamos el valor de la columna isLogged
+            $logeado = User::where('id', Auth::user()->id)->first();
+            $logeado->isLogged = 1;
+            $logeado->save();
+
             return redirect()->intended('/menu'); // Redirige al menú principal
         }
 
@@ -43,9 +49,17 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
+        //dd($request);
+        //Actualizamos el valor de la columna isLogged
+        $logeado = User::where('id', Auth::user()->id)->first();
+        $logeado->isLogged = 0;
+        $logeado->save();
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        $request->session()->forget('user_id');
+
 
         return redirect('/login'); // Redirige al login después de cerrar sesión
     }

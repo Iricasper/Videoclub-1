@@ -200,13 +200,9 @@
         <div class="user-trigger" onclick="toggleDropdown()">
             ▼ Bienvenido {{ Auth::user()->nombre }}
         </div>
-        <div id="dropdown-menu" class="dropdown-menu">
-            <a href="{{ route('logout') }}"
-                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                Cerrar sesión
-            </a>
-        </div>
     </div>
+
+    
 
     <div class="menu-container">
         <header class="menu-header">
@@ -217,8 +213,17 @@
             <a href="{{ route('alquileres.index') }}">Ver Alquileres</a>
             <a href="{{ route('peliculas.index') }}">Ver Películas</a>
             <a href="{{ route('usuarios.index') }}">Ver Clientes</a>
-            <a href="{{ route('home') }}">Cerrar Sesión</a>
+
+            <!-- Enlace para cerrar sesión con formulario oculto -->
+            <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                Cerrar Sesión
+            </a>
+
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
         </div>
+
 
         <!-- Carrusel de Noticias -->
         <div class="carousel" id="carousel">
@@ -314,6 +319,8 @@
             </form>
         </div>
     </div>
+
+    
 
     <script>
         // Noticias para el carrusel
