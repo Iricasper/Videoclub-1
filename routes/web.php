@@ -42,9 +42,16 @@ Route::middleware('auth')->group(function () {
     
     // Rutas de Usuarios (solo admin, por ejemplo)
     Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
+    Route::get('/usuarios/json', [UsuarioController::class, 'getUsersJson'])->middleware('auth');
+
 
     // Ruta para el menú principal
     Route::get('/menu', [MenuController::class, 'mostrarMenu'])->name('menu');
+
+    // Rutas para chat de mensajes
+    Route::post('/mensajes/send', [\App\Http\Controllers\MensajeController::class, 'sendMessage'])->name('mensajes.send');
+    Route::get('/mensajes/{user1}/{user2}', [\App\Http\Controllers\MensajeController::class, 'getMessages'])->name('mensajes.get');
+    
 
     // Ruta para las opiniones
     Route::post('/opiniones/create', [OpinionController::class, 'create'])->name('opiniones.create');

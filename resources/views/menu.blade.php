@@ -2,11 +2,11 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Bowlby+One+SC&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Bowlby+One+SC&display=swap" rel="stylesheet" />
 
     <title>Menú</title>
     <style>
@@ -43,10 +43,8 @@
         .menu-header {
             font-family: "Bowlby One SC", "Bowlby One SC", sans-serif;
             font-size: 40px;
-            /* font-weight: bold; */
             margin-bottom: 30px;
             color: rgb(255, 94, 0);
-            /* text-shadow: 2px 2px 10px rgba(255, 94, 0, 0.8); */
             background-color: black;
             padding: 25px;
             border-radius: 10px;
@@ -83,17 +81,14 @@
             padding: 100px;
             width: 80%;
             background-color: rgba(0, 0, 0, 0.7);
-            /* Fondo oscuro */
             border-radius: 10px;
             font-size: 20px;
-            /* Tamaño de fuente más grande */
             font-weight: bold;
             text-align: center;
             color: #fff;
             max-width: 600px;
             box-shadow: 0 4px 15px rgba(255, 94, 0, 0.6);
             line-height: 1.5;
-            /* Mejora la legibilidad */
         }
 
         /* Sombra sutil para las letras */
@@ -179,7 +174,6 @@
             transition: 0.3s ease;
             box-shadow: 0 4px 10px rgba(255, 94, 0, 0.7);
             font-weight: bold;
-
         }
 
         .btn a:hover {
@@ -189,6 +183,103 @@
 
         .btn a:active {
             transform: translateY(2px);
+        }
+
+        /* Chat styles */
+        #chat-container {
+            position: fixed;
+            bottom: 0;
+            right: 20px;
+            width: 320px;
+            max-height: 450px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            transition: height 0.3s ease;
+            height: 40px; /* Start closed */
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 75%;
+            word-wrap: break-word;
+            font-size: 14px;
+            line-height: 1.3;
+        }
+
+        .message.sent {
+            background-color: rgb(255, 94, 0);
+            align-self: flex-end;
+            color: white;
+        }
+
+        .message.received {
+            background-color: rgb(241, 165, 52);
+            align-self: flex-start;
+            color: black;
+        }
+
+        #chat-header {
+            background: rgb(255, 94, 0);
+            padding: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 10px 10px 0 0;
+            user-select: none;
+        }
+
+        #chat-user-select {
+            margin: 5px 10px;
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+            font-size: 14px;
+            background: white;
+            color: black;
+            display: none;
+        }
+
+        #chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background: #222;
+            display: none; /* Hidden when closed */
+        }
+
+        #chat-input-container {
+            display: flex;
+            border-top: 1px solid #444;
+            display: none; /* Hidden when closed */
+        }
+
+        #chat-input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 0 0 0 10px;
+            font-size: 14px;
+        }
+
+        #chat-send-btn {
+            background: rgb(255, 94, 0);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 0 0 10px 0;
+            font-weight: bold;
+        }
+
+        #chat-send-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
         }
     </style>
 </head>
@@ -201,8 +292,6 @@
             ▼ Bienvenido {{ Auth::user()->nombre }}
         </div>
     </div>
-
-    
 
     <div class="menu-container">
         <header class="menu-header">
@@ -224,7 +313,6 @@
             </form>
         </div>
 
-
         <!-- Carrusel de Noticias -->
         <div class="carousel" id="carousel">
             <p id="news-text"></p>
@@ -239,7 +327,19 @@
             @endif
         </div>
 
+    </div>
 
+    <!-- Chat container -->
+    <div id="chat-container">
+        <div id="chat-header" onclick="toggleChat()">Chat</div>
+        <select id="chat-user-select" disabled>
+            <option value="">Selecciona un usuario</option>
+        </select>
+        <div id="chat-messages"></div>
+        <div id="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Escribe un mensaje..." autocomplete="off" disabled />
+            <button id="chat-send-btn" disabled>Enviar</button>
+        </div>
     </div>
 
     <!-- Modal de Opinión -->
@@ -288,129 +388,168 @@
         </div>
     </div>
 
-    <!-- Modal de Edición -->
-    <div id="modal-editor-videoclub" class="modal">
-        <div class="modal-content">
-            <h2>Editar tu Opinión</h2>
-            <form id="form-editor" method="POST" action="{{ route('opiniones-videoclub.store') }}">
-                @csrf
-                <input type="hidden" name="id_opinion" id="id_opinion_editor">
-
-                <!-- Preguntas de Opinión -->
-                @foreach(range(1, 9) as $i)
-                    <label for="pregunta{{ $i }}">Pregunta {{ $i }}</label><br>
-                    <label class="radio-label">
-                        Sí
-                        <input type="radio" name="pregunta{{ $i }}" value="1" id="pregunta{{ $i }}_1" class="radio-button"
-                            required>
-                    </label>
-                    <label class="radio-label">
-                        No
-                        <input type="radio" name="pregunta{{ $i }}" value="0" id="pregunta{{ $i }}_2" class="radio-button"
-                            required>
-                    </label><br>
-
-                    <textarea name="comentario{{ $i }}_2" id="comentario{{ $i }}_2"
-                        placeholder="Comentario adicional (opcional)"></textarea><br><br>
-                @endforeach
-
-                <button type="submit" class="btn">Actualizar</button>
-                <button type="button" class="btn" onclick="closeModalEditorVideoclub()">Cerrar</button>
-            </form>
-        </div>
-    </div>
-
-    
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.11.3/dist/echo.iife.js"></script>
 
     <script>
-        // Noticias para el carrusel
-        const noticias = [
-            "¡Nueva película de acción en estreno! La película 'Venganza Imparable' ya está disponible para alquiler. ¡Acción sin límites!",
-            "¡Nueva temporada de tu serie favorita! La temporada 3 de 'Misterios Oscuros' ya está disponible en nuestra plataforma.",
-            "Este fin de semana, disfruta de un 30% de descuento en alquileres de películas de acción. ¡No te lo pierdas!",
-            "El 1 de abril llega 'La Guerra de los Reinos', una serie épica llena de acción y magia. ¡Pronto en tu pantalla!"
-        ];
+        const userId = {{ Auth::id() }};
+        let chatOpen = false;
+        let selectedUserId = null;
 
-        let index = 0; // Inicia el índice en 0
-        const newsTextElement = document.getElementById('news-text');
+        const chatContainer = document.getElementById('chat-container');
+        const chatHeader = document.getElementById('chat-header');
+        const chatUserSelect = document.getElementById('chat-user-select');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const chatSendBtn = document.getElementById('chat-send-btn');
 
-        // Función para cambiar el texto cada 5 segundos
-        function cambiarNoticia() {
-            newsTextElement.textContent = noticias[index];
-            index = (index + 1) % noticias.length; // Cambia al siguiente índice y vuelve al inicio cuando llegue al final
+        function toggleChat() {
+            if (chatOpen) {
+                chatContainer.style.height = '40px';
+                chatMessages.style.display = 'none';
+                chatInput.parentElement.style.display = 'none';
+                chatUserSelect.style.display = 'none';
+                chatOpen = false;
+            } else {
+                chatContainer.style.height = '450px';
+                chatMessages.style.display = 'block';
+                chatInput.parentElement.style.display = 'flex';
+                chatUserSelect.style.display = 'block';
+                chatOpen = true;
+            }
         }
 
-        // Cambia la noticia cada 5 segundos
-        setInterval(cambiarNoticia, 5000);
-
-        // Muestra la primera noticia al cargar
-        cambiarNoticia();
-
-
-        function openModalOpinionVideoclub(idCliente) {
-            document.getElementById('modal-opinion-videoclub').style.display = 'flex';
-            document.getElementById('id_cliente').value = idCliente;
-
-            // Cargar los datos de la opinión si existen
-            fetch(`/opiniones-videoclub/editar/${idCliente}`)
+        // Load users into the select dropdown
+        function loadUsers() {
+            fetch('/usuarios/json')
                 .then(response => response.json())
-                .then(data => {
-                    if (data.opinion_videoclub) {
-                        // Rellenar los campos con la opinión ya existente
-                        for (let i = 1; i <= 9; i++) {
-                            const preguntaField = document.querySelectorAll(`[name="pregunta_${i}"]`);
-
-                            const comentarioField = document.querySelector(`[name="comentario_${i}"]`);
-                            if (data.opinion_videoclub[`pregunta_${i}`] == 1) {
-                                preguntaField[0].checked = true; // Seleccionar 'Sí'
-                            } else {
-                                preguntaField[1].checked = true; // Seleccionar 'No'
-                            }
-                            comentarioField.value = data.opinion_videoclub[`comentario_${i}`] || '';
-                        }
-                    }
+                .then(users => {
+                    chatUserSelect.innerHTML = '<option value="">Selecciona un usuario</option>';
+                    users.forEach(user => {
+                        const option = document.createElement('option');
+                        option.value = user.id;
+                        option.textContent = user.nombre_completo;
+                        chatUserSelect.appendChild(option);
+                    });
+                    chatUserSelect.disabled = false;
+                })
+                .catch(error => {
+                    console.error('Error al cargar usuarios:', error);
                 });
         }
 
-        function closeModalOpinionVideoclub() {
-            document.getElementById('modal-opinion-videoclub').style.display = 'none';
+        chatUserSelect.addEventListener('change', () => {
+            selectedUserId = chatUserSelect.value;
+            chatInput.disabled = !selectedUserId;
+            chatSendBtn.disabled = true;
+            chatMessages.innerHTML = '';
+            if (selectedUserId) {
+                loadMessages();
+            }
+        });
+
+        chatInput.addEventListener('input', () => {
+            chatSendBtn.disabled = chatInput.value.trim() === '' || !selectedUserId;
+        });
+
+        chatSendBtn.addEventListener('click', sendMessage);
+
+        chatInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && !chatSendBtn.disabled) {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function appendMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', type);
+            messageDiv.textContent = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        function openModalEditorVideoclub(idCliente) {
-            fetch(`/opiniones-videoclub/editar/${idCliente}`)
+        function loadMessages() {
+            if (!selectedUserId) return;
+            fetch(`/mensajes/${userId}/${selectedUserId}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.error) {
-                        alert('No se encontró ninguna opinión para editar.');
-                        return;
-                    }
-                    // Cargar los datos en los campos
-                    document.getElementById('id_opinion_editor').value = idCliente;
-
-                    for (let i = 1; i <= 9; i++) {
-
-                        // Cargar las respuestas de las preguntas
-                        document.getElementById(`pregunta${i}_1`).checked = data[`pregunta${i}`] == 1;
-                        document.getElementById(`pregunta${i}_2`).checked = data[`pregunta${i}`] == 0;
-
-                        console.log(data);
-                        // Cargar los comentarios
-                        document.getElementById(`comentario${i}_2`).value = data[`comentario${i}`] || "";
-                    }
-
-                    // Mostrar el modal
-                    document.getElementById("modal-editor-videoclub").style.display = 'flex';
+                    chatMessages.innerHTML = '';
+                    data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                    data.forEach(msg => {
+                        const type = msg.user_emisor == userId ? 'sent' : 'received';
+                        appendMessage(msg.mensaje, type);
+                    });
                 })
-                .catch(error => console.error('Error al obtener los datos de la opinión:', error));
+                .catch(error => {
+                    console.error('Error al cargar mensajes:', error);
+                });
         }
 
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (message === '' || !selectedUserId) {
+                return;
+            }
 
-        function closeModalEditorVideoclub() {
-            document.getElementById("modal-editor-videoclub").style.display = 'none';
+            chatInput.value = '';
+            chatSendBtn.disabled = true;
+
+            appendMessage(message, 'sent');
+
+            fetch('/mensajes/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    mensaje: message,
+                    user_receptor: selectedUserId
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al enviar mensaje');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Optionally reload messages or handle success
+            })
+            .catch(error => {
+                console.error(error);
+            });
         }
 
+        // Setup Pusher and Laravel Echo
+        Pusher.logToConsole = false;
+
+        const echo = new Echo({
+            broadcaster: 'pusher',
+            key: '{{ env("PUSHER_APP_KEY") }}',
+            cluster: '{{ env("PUSHER_APP_CLUSTER") }}',
+            forceTLS: true,
+            encrypted: true,
+            authEndpoint: '/broadcasting/auth',
+            auth: {
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }
+        });
+
+        // Listen to private channel for authenticated user
+        echo.private(`chat.${userId}`)
+            .listen('.mensaje.enviado', (e) => {
+                if (selectedUserId && (e.emisor_id == selectedUserId || e.emisor_id == userId)) {
+                    appendMessage(e.mensaje, e.emisor_id == userId ? 'sent' : 'received');
+                }
+            });
+
+        // Initialize chat by loading users
+        loadUsers();
     </script>
-
 
     <!-- Pie de Página -->
     <div class="footer" style="display: none;">

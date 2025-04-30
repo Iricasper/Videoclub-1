@@ -34,5 +34,15 @@ class UsuarioController extends Controller
         $pdf = Pdf::loadView('pdf', compact('usuarios')); // Asegúrate de que 'pdf' es el nombre correcto de la vista
         return $pdf->download('clientes.pdf');
     }
+
+    public function getUsersJson()
+    {
+        $authUserId = auth()->id();
+        $users = User::select('id', \DB::raw("CONCAT(nombre, ' ', apellido1, ' ', apellido2) AS nombre_completo"))
+            ->where('id', '!=', $authUserId)
+            ->get();
+
+        return response()->json($users);
+    }
     
 }
