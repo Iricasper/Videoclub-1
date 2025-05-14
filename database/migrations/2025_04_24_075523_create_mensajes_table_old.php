@@ -12,9 +12,9 @@ return new class extends Migration {
     {
         Schema::create('mensajes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_emisor')->constrained('users')->onDelete('cascade');
-            $table->foreignId('user_receptor')->constrained('users')->onDelete('cascade');
-            $table->text('mensaje');
+            $table->foreignId('from_user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('to_user_id')->constrained('users')->onDelete('cascade');
+            $table->text('message');
             $table->timestamps();
 
         });
@@ -27,4 +27,7 @@ return new class extends Migration {
     {
         Schema::dropIfExists('mensajes');
     }
+
+
+
 };

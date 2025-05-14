@@ -11,23 +11,31 @@ class MensajeController extends Controller
 {
     public function sendMessage(Request $request)
     {
-        // Validar el mensaje
-        $validated = $request->validate([
-            'mensaje' => 'required|string|max:255',
-            'user_receptor' => 'required|exists:users,id',
-        ]);
+        try {
+            // Validar el mensaje
+            $validated = $request->validate([
+                'mensaje' => 'required|string|max:255',
+                'user_receptor' => 'required|exists:users,id',
+            ]);
 
-        // Crear el mensaje en la base de datos
-        $mensaje = Mensaje::create([
-            'user_emisor' => Auth::id(),  // El usuario autenticado
-            'user_receptor' => $validated['user_receptor'],
-            'mensaje' => $validated['mensaje'],
-        ]);
+            // Crear el mensaje en la base de datos
+            $mensaje = Mensaje::create([
+                'user_emisor' => Auth::id(),  // El usuario autenticado
+                'user_receptor' => $validated['user_receptor'],
+                'mensaje' => $validated['mensaje'],
+            ]);
 
-        // Emitir el evento de broadcasting
-        broadcast(new MensajeEnviado($mensaje));  // Emitir el evento
+            // Emitir el evento de broadcasting
+            broadcast(new MensajeEnviado($mensaje));  // Emitir el evento
 
-        return response()->json(['mensaje' => $mensaje], 200);
+            return response()->json(['mensaje' => $mensaje], 200);
+        } catch (\Exception $e) {
+            // Retornar error con mensaje para depuración
+            return response()->json([
+                'error' => 'Error al enviar mensaje',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function getMessages($user1, $user2)

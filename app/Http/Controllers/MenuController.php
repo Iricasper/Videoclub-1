@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
 
 class MenuController extends Controller
 {
+
     public function mostrarMenu()
 {
     // 🔥 Depura el contenido de la sesión
-    //dd(session()->all());  // Asegúrate de que `user_id` esté presente
+    //dd(Auth::id());  // Asegúrate de que el ID del usuario autenticado esté presente
 
-    // Obtener el ID del usuario desde la sesión
-    $usuario_id = session('user_id');
+    // Obtener el ID del usuario autenticado
+    $usuario_id = Auth()->id();
 
     if ($usuario_id) {
         // Obtener el nombre del usuario por su ID
