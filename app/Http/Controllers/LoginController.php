@@ -30,9 +30,6 @@ class LoginController extends Controller
         if (Auth::attempt($request->only('email', 'password'))) {
             $request->session()->regenerate();
 
-            // Guarda el ID del usuario en la sesión manualmente
-            session(['user_id' => Auth::user()->id]);
-
             //Actualizamos el valor de la columna isLogged
             $logeado = User::where('id', Auth::user()->id)->first();
             $logeado->isLogged = 1;
@@ -58,8 +55,6 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        $request->session()->forget('user_id');
-
 
         return redirect('/login'); // Redirige al login después de cerrar sesión
     }

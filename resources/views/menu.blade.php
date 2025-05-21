@@ -212,6 +212,7 @@
             word-wrap: break-word;
             font-size: 14px;
             line-height: 1.3;
+            position: relative;
         }
 
         .message.sent {
@@ -224,6 +225,14 @@
             background-color: rgb(241, 165, 52);
             align-self: flex-start;
             color: black;
+        }
+
+        .message-time {
+            font-size: 10px;
+            color: #ccc;
+            position: absolute;
+            bottom: 2px;
+            right: 10px;
         }
 
         #chat-header {
@@ -243,7 +252,7 @@
             font-size: 14px;
             background: white;
             color: black;
-            display: none;
+            display: block;
         }
 
         #chat-messages {
@@ -474,10 +483,18 @@
             }
         });
 
-        function appendMessage(message, type) {
+        function appendMessage(message, type, time) {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', type);
             messageDiv.textContent = message;
+
+            if (time) {
+                const timeSpan = document.createElement('span');
+                timeSpan.classList.add('message-time');
+                timeSpan.textContent = time;
+                messageDiv.appendChild(timeSpan);
+            }
+
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
@@ -507,7 +524,9 @@
             chatInput.value = '';
             chatSendBtn.disabled = true;
 
-            appendMessage(message, 'sent');
+            const now = new Date();
+            const time = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            appendMessage(message, 'sent', time);
 
             fetch('/mensajes/send', {
                     method: 'POST',
