@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\Mensaje;
+use App\Models\Mensajes;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -15,7 +15,7 @@ class MensajeEnviado implements ShouldBroadcast
 
     public $mensaje;
 
-    public function __construct(Mensaje $mensaje)
+    public function __construct(Mensajes $mensaje)
     {
         $this->mensaje = $mensaje;
     }

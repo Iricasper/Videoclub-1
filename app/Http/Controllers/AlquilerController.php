@@ -8,7 +8,7 @@ use App\Models\Opinion;
 use DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class AlquilerController extends Controller
 {

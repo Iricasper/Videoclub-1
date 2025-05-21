@@ -6,6 +6,7 @@ use App\Models\Pelicula;
 use App\Models\Alquiler;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PeliculaController extends Controller
 {
@@ -39,7 +40,7 @@ class PeliculaController extends Controller
 
         // Crear el alquiler en la base de datos
         $alquiler = Alquiler::create([
-            'id_cliente' => auth()->user()->id, // Asumiendo que el cliente está autenticado
+            'id_cliente' => Auth::user()->id, // Asumiendo que el cliente está autenticado
             'id_pelicula' => $pelicula->id,
             'fecha_alquiler' => $fecha_alquiler,
             'fecha_devolucion' => $fecha_devolucion,
@@ -54,7 +55,7 @@ class PeliculaController extends Controller
     public function alquileres()
     {
         // Obtener todos los alquileres del cliente autenticado
-        $alquileres = Alquiler::where('id_cliente', auth()->user()->id)->get();
+        $alquileres = Alquiler::where('id_cliente', Auth::user()->id)->get();
 
         return view('alquileres', compact('alquileres')); // Pasar los alquileres a la vista
     }
@@ -66,7 +67,7 @@ class PeliculaController extends Controller
         $alquiler = Alquiler::find($id);
 
         // Comprobar si el alquiler existe y si el cliente es el propietario
-        if (!$alquiler || $alquiler->id_cliente != auth()->user()->id) {
+        if (!$alquiler || $alquiler->id_cliente != Auth::user()->id) {
             return redirect()->back()->with('error', 'No se encuentra el alquiler o no tienes permiso');
         }
 
@@ -83,7 +84,7 @@ class PeliculaController extends Controller
         $alquiler = Alquiler::find($id);
 
         // Comprobar si el alquiler existe y si el cliente es el propietario
-        if (!$alquiler || $alquiler->id_cliente != auth()->user()->id) {
+        if (!$alquiler || $alquiler->id_cliente != Auth::user()->id) {
             return redirect()->back()->with('error', 'No se encuentra el alquiler o no tienes permiso');
         }
 

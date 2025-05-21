@@ -200,7 +200,8 @@
             font-family: Arial, sans-serif;
             overflow: hidden;
             transition: height 0.3s ease;
-            height: 40px; /* Start closed */
+            height: 40px;
+            /* Start closed */
         }
 
         .message {
@@ -250,13 +251,15 @@
             overflow-y: auto;
             padding: 10px;
             background: #222;
-            display: none; /* Hidden when closed */
+            display: none;
+            /* Hidden when closed */
         }
 
         #chat-input-container {
             display: flex;
             border-top: 1px solid #444;
-            display: none; /* Hidden when closed */
+            display: none;
+            /* Hidden when closed */
         }
 
         #chat-input {
@@ -360,26 +363,28 @@
                         'pregunta5' => '¿Es buena la relación con el departamento de RRHH de Recursos Impulsa?',
                         'pregunta6' => '¿Es buena la relación con el departamento técnico de Recursos Impulsa?',
                         'pregunta7' => '¿Es buena la relación con el departamento de dirección de Recursos Impulsa?',
-                        'pregunta8' => '¿Es buena la relación con el departamento de Administración de Recursos Impulsa?',
-                        'pregunta9' => '¿Te sientes apoyado ante dificultades o incidencias por Recursos Impulsa?'
+                        'pregunta8' =>
+                            '¿Es buena la relación con el departamento de Administración de Recursos Impulsa?',
+                        'pregunta9' => '¿Te sientes apoyado ante dificultades o incidencias por Recursos Impulsa?',
                     ];
                 @endphp
 
-                @foreach($preguntas as $key => $pregunta)
+                @foreach ($preguntas as $key => $pregunta)
                     <label>{{ $pregunta }}</label><br>
 
                     <!-- Radio buttons con la estructura correcta -->
                     <label class="radio-label">
                         Sí
-                        <input type="radio" name="{{ $key }}" value="1" class="radio-button" {{ old($key) == '1' ? 'checked' : '' }} required>
+                        <input type="radio" name="{{ $key }}" value="1" class="radio-button"
+                            {{ old($key) == '1' ? 'checked' : '' }} required>
                     </label>
                     <label class="radio-label">
                         No
-                        <input type="radio" name="{{ $key }}" value="0" class="radio-button" {{ old($key) == '0' ? 'checked' : '' }} required>
+                        <input type="radio" name="{{ $key }}" value="0" class="radio-button"
+                            {{ old($key) == '0' ? 'checked' : '' }} required>
                     </label><br>
 
-                    <textarea name="comentario_{{ $key }}"
-                        placeholder="Comentario adicional (opcional)">{{ old("comentario{$key}") }}</textarea><br><br>
+                    <textarea name="comentario_{{ $key }}" placeholder="Comentario adicional (opcional)">{{ old("comentario{$key}") }}</textarea><br><br>
                 @endforeach
 
                 <button type="submit" class="btn">Enviar</button>
@@ -422,7 +427,13 @@
         // Load users into the select dropdown
         function loadUsers() {
             fetch('/usuarios/json')
-                .then(response => response.json())
+                .then(response => {
+                    // if (!response.ok) {
+                    //     // Si la respuesta no es OK (redirección o error), lanzamos un error
+                    //     throw new Error('No autorizado o redirigido al login');
+                    // }
+                    return response.json();
+                })
                 .then(users => {
                     chatUserSelect.innerHTML = '<option value="">Selecciona un usuario</option>';
                     users.forEach(user => {
@@ -436,6 +447,8 @@
                 .catch(error => {
                     console.error('Error al cargar usuarios:', error);
                 });
+
+
         }
 
         chatUserSelect.addEventListener('change', () => {
@@ -444,7 +457,7 @@
             chatSendBtn.disabled = true;
             chatMessages.innerHTML = '';
             if (selectedUserId) {
-                loadMessages();
+              loadMessages()
             }
         });
 
@@ -471,15 +484,14 @@
 
         function loadMessages() {
             if (!selectedUserId) return;
-            fetch(`/mensajes/${userId}/${selectedUserId}`)
-                .then(response => response.json())
+            fetch(`/mensajes/${userId}/${selectedUserId}`).then(response => response.json())
                 .then(data => {
                     chatMessages.innerHTML = '';
                     data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
                     data.forEach(msg => {
                         const type = msg.user_emisor == userId ? 'sent' : 'received';
                         appendMessage(msg.mensaje, type);
-                    });
+                    })
                 })
                 .catch(error => {
                     console.error('Error al cargar mensajes:', error);
@@ -498,28 +510,28 @@
             appendMessage(message, 'sent');
 
             fetch('/mensajes/send', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    mensaje: message,
-                    user_receptor: selectedUserId
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        mensaje: message,
+                        user_receptor: selectedUserId
+                    })
                 })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error al enviar mensaje');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Optionally reload messages or handle success
-            })
-            .catch(error => {
-                console.error(error);
-            });
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al enviar mensaje');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Optionally reload messages or handle success
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         }
 
         // Setup Pusher and Laravel Echo
@@ -527,8 +539,8 @@
 
         const echo = new Echo({
             broadcaster: 'pusher',
-            key: '{{ env("PUSHER_APP_KEY") }}',
-            cluster: '{{ env("PUSHER_APP_CLUSTER") }}',
+            key: '{{ env('PUSHER_APP_KEY') }}',
+            cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
             forceTLS: true,
             encrypted: true,
             authEndpoint: '/broadcasting/auth',
@@ -541,7 +553,7 @@
 
         // Listen to private channel for authenticated user
         echo.private(`chat.${userId}`)
-            .listen('.mensaje.enviado', (e) => {
+            .listen('mensaje.enviado', (e) => {
                 if (selectedUserId && (e.emisor_id == selectedUserId || e.emisor_id == userId)) {
                     appendMessage(e.mensaje, e.emisor_id == userId ? 'sent' : 'received');
                 }
@@ -549,6 +561,8 @@
 
         // Initialize chat by loading users
         loadUsers();
+
+
     </script>
 
     <!-- Pie de Página -->

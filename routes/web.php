@@ -7,10 +7,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MensajeController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OpinionController;
-
+use Illuminate\Support\Facades\Auth;
 
 // Ruta de la página de inicio
 Route::get('/', function () {
@@ -31,27 +32,27 @@ Route::post('/devolver/{id}', [AlquilerController::class, 'devolver'])->name('de
 Route::middleware('auth')->group(function () {
     // Ruta del home
     Route::get('/home', [HomeController::class, 'index'])->name('home');
-
+    
     // Rutas de Películas
     Route::get('/peliculas', [PeliculaController::class, 'index'])->name('peliculas.index');
     Route::get('/peliculas/{id}', [PeliculaController::class, 'show'])->name('peliculas.show');
-
+    
     // Rutas de Alquileres
     Route::get('/alquileres', [AlquilerController::class, 'index'])->name('alquileres.index');  // Mostrar alquileres
     Route::post('/alquilar/{id}', [AlquilerController::class, 'store'])->name('alquileres.store');  // Crear alquiler
     
     // Rutas de Usuarios (solo admin, por ejemplo)
     Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
-    Route::get('/usuarios/json', [UsuarioController::class, 'getUsersJson'])->middleware('auth');
-
-
+    
+    
     // Ruta para el menú principal
     Route::get('/menu', [MenuController::class, 'mostrarMenu'])->name('menu');
 
     // Rutas para chat de mensajes
-    Route::post('/mensajes/send', [\App\Http\Controllers\MensajeController::class, 'sendMessage'])->name('mensajes.send');
-    Route::get('/mensajes/{user1}/{user2}', [\App\Http\Controllers\MensajeController::class, 'getMessages'])->name('mensajes.get');
+    Route::post('/mensajes/send', [MensajeController::class, 'sendMessage'])->name('mensajes.send');
+    Route::get('/mensajes/{user1}/{user2}', [MensajeController::class, 'getMessages'])->name('mensajes.get');
     
+    Route::get('/usuarios/json', [UsuarioController::class, 'getUsersJson']);
 
     // Ruta para las opiniones
     Route::post('/opiniones/create', [OpinionController::class, 'create'])->name('opiniones.create');
@@ -59,18 +60,25 @@ Route::middleware('auth')->group(function () {
     // Ruta para obtener la opinión de un usuario para una película específica
     Route::get('/opiniones/editar/{idPelicula}', [OpinionController::class, 'edit']);
     Route::get('/opiniones/details/{id}', [OpinionController::class, 'details'])->name('opiniones.details');
-    
+
     Route::post('/opiniones-videoclub/create', [OpinionVideoclubController::class, 'create'])->name('opiniones-videoclub.create');
     Route::post('/opiniones-videoclub/store', [OpinionVideoclubController::class, 'store'])->name('opiniones-videoclub.store');
     Route::get('/opiniones-videoclub/editar/{idCliente}', [OpinionVideoclubController::class, 'edit']);
 
     //Rutas de clientes
     Route::get('/clientes/exportar-pdf', [UsuarioController::class, 'exportarPDF'])->name('exportarPDF');
-
-
-
 });
-
+// Ruta de pruebas de autenticación
+Route::get('/debug-auth', function () {
+    return response()->json([
+        'auth_user_id' => Auth::id(),
+        'is_logged_in' => Auth::check(),
+    ]);
+});
+// Ruta de pruebas de sesión
+Route::get('/debug-session', function () {
+    return session()->all();
+});
 // Si el usuario intenta acceder a una página sin permiso, redirigir al login
 Route::fallback(function () {
     return redirect()->route('login');

@@ -13,4 +13,16 @@ class Mensajes extends Model
         'user_receptor',
         'mensaje',
     ];
+
+    // Relación con el emisor
+    public function emisor()
+    {
+        return $this->belongsTo(User::class, 'user_emisor');
+    }
+
+    // Relación con el receptor
+    public function receptor()
+    {
+        return $this->belongsTo(User::class, 'user_receptor');
+    }
 }

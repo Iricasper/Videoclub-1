@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\MensajeEnviado;
-use App\Models\Mensaje;
+use App\Models\Mensajes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,7 +18,7 @@ class MensajeController extends Controller
         ]);
 
         // Crear el mensaje en la base de datos
-        $mensaje = Mensaje::create([
+        $mensaje = Mensajes::create([
             'user_emisor' => Auth::id(),  // El usuario autenticado
             'user_receptor' => $validated['user_receptor'],
             'mensaje' => $validated['mensaje'],
@@ -33,15 +33,11 @@ class MensajeController extends Controller
     public function getMessages($user1, $user2)
     {
         // Obtener los mensajes entre dos usuarios
-        $messages = Mensaje::where(function ($query) use ($user1, $user2) {
-            $query->where('user_emisor', $user1)
-                ->where('user_receptor', $user2);
-        })
-        ->orWhere(function ($query) use ($user1, $user2) {
-            $query->where('user_emisor', $user2)
-                ->where('user_receptor', $user1);
-        })
-        ->get();
+        $messages = Mensajes::where(function ($query) use ($user1, $user2) {
+            $query->whereIn('user_emisor', [$user1, $user2])
+                ->whereIn('user_receptor', [$user1, $user2])
+                ->whereColumn('user_emisor', '!=', 'user_receptor');
+        })->get();
 
         return response()->json($messages);
     }

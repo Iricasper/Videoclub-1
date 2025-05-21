@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User; // Asegúrate de importar el modelo User
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UsuarioController extends Controller
 {
@@ -37,11 +38,9 @@ class UsuarioController extends Controller
 
     public function getUsersJson()
     {
-        $authUserId = auth()->id();
-        $users = User::select('id', \DB::raw("CONCAT(nombre, ' ', apellido1, ' ', apellido2) AS nombre_completo"))
-            ->where('id', '!=', $authUserId)
+        $users = User::select('id', DB::raw("CONCAT(nombre, ' ', apellido1, ' ', apellido2) AS nombre_completo"))
+            ->where('id', '!=', Auth::id())
             ->get();
-
         return response()->json($users);
     }
     
